@@ -79,3 +79,5 @@ test-result
 server.pid
 *.eml
 /dist/
+
+/RUNNING_PID
