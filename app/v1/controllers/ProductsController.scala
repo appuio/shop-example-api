@@ -5,11 +5,12 @@ import javax.inject.Inject
 import play.api.mvc._
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
-import play.api.libs.ws.WSClient
 import slick.driver.JdbcProfile
 import v1.models.{Product, Products}
 
-class ProductsController @Inject()(dbConfigProvider: DatabaseConfigProvider, wsClient: WSClient) extends Controller {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class ProductsController @Inject()(dbConfigProvider: DatabaseConfigProvider) extends Controller {
   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig.driver.api._

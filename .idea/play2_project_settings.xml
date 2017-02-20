@@ -8,7 +8,7 @@
             <ProjectSettingsEntry>
               <option name="sourceDir" value="C:\Users\rolan\Documents\Git\VSHN\docs_example_api\app" />
               <option name="confDir" value="C:\Users\rolan\Documents\Git\VSHN\docs_example_api\app" />
-              <option name="playDistrPath" value="$USER_HOME$/.ivy2/cache/com.typesafe.play/play_2.11/jars/play_2.11-2.5.10.jar" />
+              <option name="playDistrPath" value="$USER_HOME$/.ivy2/cache/com.typesafe.play/play_2.11/jars/play_2.11-2.5.12.jar" />
               <option name="templateImports">
                 <list>
                   <option value="models._" />
