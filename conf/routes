@@ -2,3 +2,6 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+# products
+GET        /products            v1.controllers.ProductsController.index
+GET        /products/:id        v1.controllers.ProductsController.read(id: Int)
