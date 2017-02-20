@@ -7,10 +7,6 @@ test:
   script:
     - sbt -ivy .ivy test # test the application with SBT
     - du -sh .ivy # print the disk usage of the .ivy folder
-  artifacts:
-    expire_in: "5min"
-    paths:
-      - .ivy
   cache:
     paths:
       - .ivy
