@@ -1,0 +1,16 @@
+stages:
+  - test
+
+test:
+  image: registry.vshn.net/roland.schlaefli/runner-sbt:sbt-0.13.13
+  stage: test
+  script:
+    - sbt -ivy .ivy test # test the application with SBT
+    - du -sh .ivy # print the disk usage of the .ivy folder
+  artifacts:
+    expire_in: "5min"
+    paths:
+      - .ivy
+  cache:
+    paths:
+      - .ivy
