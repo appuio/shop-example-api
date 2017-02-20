@@ -17,7 +17,7 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
   }
 
-  "HomeController" should {
+  /*"HomeController" should {
 
     "render the index page" in {
       val home = route(app, FakeRequest(GET, "/")).get
@@ -37,6 +37,6 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
       contentAsString(route(app, FakeRequest(GET, "/count")).get) mustBe "2"
     }
 
-  }
+  }*/
 
 }
