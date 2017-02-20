@@ -16,7 +16,7 @@ class ProductsController @Inject()(dbConfigProvider: DatabaseConfigProvider, wsC
 
   private val products = TableQuery[Products]
 
-  implicit val productFormat = Format[Product] = Json.format[Product]
+  implicit val productFormat: Format[Product] = Json.format[Product]
 
   def index = Action.async {
     val allProductsQuery = products.result
