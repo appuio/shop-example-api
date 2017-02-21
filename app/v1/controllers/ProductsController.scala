@@ -27,7 +27,7 @@ class ProductsController @Inject()(dbConfigProvider: DatabaseConfigProvider) ext
     } yield {
       Ok(Json.obj(
         "success" -> true,
-        "data" -> Json.toJson(result)
+        "items" -> Json.toJson(result)
       ))
     }
   }
