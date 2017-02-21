@@ -33,7 +33,7 @@ class ProductsController @Inject()(dbConfigProvider: DatabaseConfigProvider) ext
   }
 
   def read(id: Int) = Action.async {
-    val productQuery = products.filter(_.id === id).result
+    val productQuery = products.filter(_.id === id).result.head
 
     for {
       result <- dbConfig.db.run(productQuery)
