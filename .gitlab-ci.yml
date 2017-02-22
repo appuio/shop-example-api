@@ -12,8 +12,10 @@ test:
   image: registry.vshn.net/roland.schlaefli/runner-sbt:sbt-0.13.13
   stage: test
   script:
-    - sbt -ivy .ivy test # test the application with SBT
-    - du -sh .ivy # print the disk usage of the .ivy folder
+    # test the application with SBT
+    - sbt -ivy .ivy test 
+    # print the disk usage of the .ivy folder
+    - du -sh .ivy 
   cache:
     paths:
       - .ivy
@@ -23,6 +25,7 @@ build-dev:
   stage: deploy-dev
   image: registry.vshn.net/roland.schlaefli/docs_runner_oc
   script:
+    # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
     # start a new build for dev environment on every push to master
     - oc start-build api --follow 
@@ -36,6 +39,7 @@ build-preprod:
   stage: deploy-preprod
   image: registry.vshn.net/roland.schlaefli/docs_runner_oc
   script:
+    # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
     # tag the latest image as stable to trigger a deploy to preprod
     - oc tag $OC_REGISTRY_IMAGE:latest $OC_REGISTRY_IMAGE:stable
@@ -47,6 +51,7 @@ build-prod:
   stage: deploy-prod
   image: registry.vshn.net/roland.schlaefli/docs_runner_oc
   script:
+    # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
     # tag the stable image as live to trigger a deploy to prod
     - oc tag $OC_REGISTRY_IMAGE:stable $OC_REGISTRY_IMAGE:live
