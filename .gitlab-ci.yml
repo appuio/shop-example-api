@@ -5,7 +5,7 @@ stages:
   - deploy-prod
 
 test:
-  image: registry.vshn.net/roland.schlaefli/runner-sbt:sbt-0.13.13
+  image: registry.vshn.net/roland.schlaefli/docs_runner_sbt:sbt-0.13.13
   stage: test
   script:
     # test the application with SBT
