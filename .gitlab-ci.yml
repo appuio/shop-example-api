@@ -1,5 +1,12 @@
 stages:
   - test
+  - deploy-dev
+  - deploy-preprod
+  - deploy-prod
+
+variables:
+  OC_REGISTRY_URL: "registry.appuio.ch"
+  OC_REGISTRY_IMAGE: "$OC_REGISTRY_URL/$KUBE_NAMESPACE/docs_example_api"
 
 test:
   image: registry.vshn.net/roland.schlaefli/runner-sbt:sbt-0.13.13
@@ -10,3 +17,39 @@ test:
   cache:
     paths:
       - .ivy
+
+build-dev:
+  environment: dev
+  stage: deploy-dev
+  image: registry.vshn.net/roland.schlaefli/docs_runner_oc
+  script:
+    - oc login $KUBE_URL --token=$KUBE_TOKEN
+    # start a new build for dev environment on every push to master
+    - oc start-build api --follow 
+  only:
+    - master
+  except:
+    - tags
+
+build-preprod:
+  environment: preprod
+  stage: deploy-preprod
+  image: registry.vshn.net/roland.schlaefli/docs_runner_oc
+  script:
+    - oc login $KUBE_URL --token=$KUBE_TOKEN
+    # tag the latest image as stable to trigger a deploy to preprod
+    - oc tag $OC_REGISTRY_IMAGE:latest $OC_REGISTRY_IMAGE:stable
+  only:
+    - tags
+
+build-prod:
+  environment: prod
+  stage: deploy-prod
+  image: registry.vshn.net/roland.schlaefli/docs_runner_oc
+  script:
+    - oc login $KUBE_URL --token=$KUBE_TOKEN
+    # tag the stable image as live to trigger a deploy to prod
+    - oc tag $OC_REGISTRY_IMAGE:stable $OC_REGISTRY_IMAGE:live
+  only:
+    - tags
+  when: manual
