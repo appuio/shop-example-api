@@ -4,10 +4,6 @@ stages:
   - deploy-preprod
   - deploy-prod
 
-variables:
-  OC_REGISTRY_URL: "registry.appuio.ch"
-  OC_REGISTRY_IMAGE: "$OC_REGISTRY_URL/$KUBE_NAMESPACE/docs_example_api"
-
 test:
   image: registry.vshn.net/roland.schlaefli/runner-sbt:sbt-0.13.13
   stage: test
@@ -42,7 +38,7 @@ build-preprod:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
     # tag the latest image as stable to trigger a deploy to preprod
-    - oc tag $OC_REGISTRY_IMAGE:latest $OC_REGISTRY_IMAGE:stable
+    - oc tag api:latest api:stable
   only:
     - tags
 
@@ -54,7 +50,7 @@ build-prod:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
     # tag the stable image as live to trigger a deploy to prod
-    - oc tag $OC_REGISTRY_IMAGE:stable $OC_REGISTRY_IMAGE:live
+    - oc tag api:stable api:live
   only:
     - tags
   when: manual
