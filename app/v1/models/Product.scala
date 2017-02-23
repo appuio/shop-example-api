@@ -21,17 +21,17 @@ class Products(tag: Tag) extends Table[Product](tag, "products") {
   // category
   def categoryId = column[Int]("category_id")
 
-  def category = foreignKey("CATEGORY_FK", categoryId, categories)
+  def category = foreignKey("CATEGORY_FK", categoryId, categories)(_.id)
 
   // license type
   def licenseTypeId = column[Int]("license_type_id")
 
-  def licenseType = foreignKey("LICENSE_TYPE_FK", licenseTypeId, licenseTypes)
+  def licenseType = foreignKey("LICENSE_TYPE_FK", licenseTypeId, licenseTypes)(_.id)
 
   // publisher
   def publisherId = column[Int]("publisher_id")
 
-  def publisher = foreignKey("PUBLISHER_FK", publisherId, publishers)
+  def publisher = foreignKey("PUBLISHER_FK", publisherId, publishers)(_.id)
 
   // mapping to case class
   def * = (id, uuid, categoryId, licenseTypeId, publisherId, name, price, description) <> (Product.tupled, Product.unapply)

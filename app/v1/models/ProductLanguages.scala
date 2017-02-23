@@ -11,12 +11,12 @@ class ProductLanguages(tag: Tag) extends Table[ProductLanguage](tag, "product_la
   // product
   def productId = column[Int]("product_id")
 
-  def product = foreignKey("PRODUCT_FK", productId, products)
+  def product = foreignKey("PRODUCT_FK", productId, products)(_.id)
 
   // language
   def languageId = column[Int]("language_id")
 
-  def language = foreignKey("LANGUAGE_FK", languageId, languages)
+  def language = foreignKey("LANGUAGE_FK", languageId, languages)(_.id)
 
   // composite primary key
   def pk = primaryKey("PK", (productId, languageId))
