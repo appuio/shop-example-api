@@ -13,7 +13,9 @@ class Products(tag: Tag) extends Table[Product](tag, "products") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
   def uuid = column[String]("uuid")
+
   def name = column[String]("name", O.Length(255))
+
   def price = column[Float]("price", O.Length(10))
 
   def description = column[String]("description")
