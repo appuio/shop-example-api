@@ -60,7 +60,6 @@ class ProductsController @Inject()(dbConfigProvider: DatabaseConfigProvider) ext
     for {
       result <- dbConfig.db.run(extendedProductQuery.result.head)
     } yield {
-      println(result)
       Ok(Json.obj(
         "success" -> true,
         "data" -> Json.obj(
