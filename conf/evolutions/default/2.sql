@@ -35,11 +35,11 @@ ALTER TABLE public.products
     ADD COLUMN description TEXT;
 
 # --- !Downs
+DROP TABLE public.product_languages;
 DROP TABLE public.categories;
 DROP TABLE public.languages;
 DROP TABLE public.license_types;
 DROP TABLE public.publishers;
-DROP TABLE public.product_languages;
 
 ALTER TABLE public.products
     DELETE COLUMN uuid,
