@@ -29,10 +29,7 @@ class ProductsController @Inject()(dbConfigProvider: DatabaseConfigProvider) ext
 
   def index = Action.async {
     val allProductsQuery = for {
-      p <- products
-      c <- categories
-      l <- licenseTypes
-      pb <- publishers
+      (((p, c), l), pb) <- ((products join categories on (_.categoryId === _.id)) join licenseTypes on (_._1.licenseTypeId === _.id)) join publishers on (_._1._1.publisherId === _.id)
     } yield (p, c, l, pb)
 
     for {
@@ -57,15 +54,13 @@ class ProductsController @Inject()(dbConfigProvider: DatabaseConfigProvider) ext
     val productQuery = products.filter(_.id === id)
 
     val extendedProductQuery = for {
-      p <- productQuery
-      c <- categories
-      l <- licenseTypes
-      pb <- publishers
+      (((p, c), l), pb) <- ((productQuery join categories on (_.categoryId === _.id)) join licenseTypes on (_._1.licenseTypeId === _.id)) join publishers on (_._1._1.publisherId === _.id)
     } yield (p, c, l, pb)
 
     for {
       result <- dbConfig.db.run(extendedProductQuery.result.head)
     } yield {
+      println(result)
       Ok(Json.obj(
         "success" -> true,
         "data" -> Json.obj(
