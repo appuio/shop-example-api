@@ -2,9 +2,9 @@ package v1.controllers
 
 import javax.inject.Inject
 
-import play.api.mvc._
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
+import play.api.mvc._
 import slick.driver.JdbcProfile
 import v1.models.{Product, Products}
 
