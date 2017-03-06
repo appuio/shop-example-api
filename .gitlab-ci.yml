@@ -16,7 +16,7 @@ test:
     paths:
       - .ivy
 
-build-dev:
+build-staging:
   environment: api-staging
   stage: deploy-staging
   image: registry.vshn.net/roland.schlaefli/docs_runner_oc:1.3.3
