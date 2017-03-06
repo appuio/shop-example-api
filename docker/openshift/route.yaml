@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: api-staging
+  namespace: vshn-demoapp1
+  labels:
+    app: api-staging
+  annotations:
+    openshift.io/host.generated: 'true'
+spec:
+  host: api-staging-vshn-demoapp1.appuioapp.ch
+  to:
+    kind: Service
+    name: api-staging
+    weight: 100
+  port:
+    targetPort: 9000-tcp
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+    
