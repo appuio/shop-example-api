@@ -23,8 +23,13 @@ build-dev:
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
-    # start a new build for dev environment on every push to master
+    # start a new build for staging environment on every push to master
     - oc start-build api --follow 
+    # update the configuration in openshift
+    - sed -i 's;PLAY_SECRET_PLACEHOLDER;$PLAY_SECRET;g' docker/openshift/*
+    - oc replace -f docker/openshift -R
+    # trigger a deployment
+    - oc deploy api-staging --latest --follow
   only:
     - master
   except:
@@ -37,8 +42,16 @@ build-preprod:
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
-    # tag the latest image as stable to trigger a deploy to preprod
+    # tag the latest image as stable
     - oc tag api:latest api:stable
+    # update the configuration in OpenShift
+    - sed -i 's;PLAY_SECRET_PLACEHOLDER;$PLAY_SECRET;g' docker/openshift/*
+    - sed -i 's;api-staging;api-preprod;g' docker/openshift/*
+    - sed -i 's;api:latest;api:stable;g' docker/openshift/*
+    - sed -i 's;172.30.216.216;172.30.232.198;g' docker/openshift/*
+    - oc replace -f docker/openshift -R
+    # trigger a deployment
+    - oc deploy api-preprod --latest --follow
   only:
     - tags
 
@@ -49,8 +62,16 @@ build-prod:
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
-    # tag the stable image as live to trigger a deploy to prod
+    # tag the stable image as live
     - oc tag api:stable api:live
+    # update the configuration in OpenShift
+    - sed -i 's;PLAY_SECRET_PLACEHOLDER;$PLAY_SECRET;g' docker/openshift/*
+    - sed -i 's;api-staging;api-prod;g' docker/openshift/*
+    - sed -i 's;api:latest;api:live;g' docker/openshift/*
+    - sed -i 's;172.30.216.216;172.30.249.91;g' docker/openshift/*
+    - oc replace -f docker/openshift -R
+    # trigger a deployment
+    - oc deploy api-prod --latest --follow
   only:
     - tags
   when: manual
