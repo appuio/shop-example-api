@@ -17,12 +17,12 @@ test:
   stage: test
   script:
     # test the application with SBT
-    - sbt -ivy $SBT_CACHE test 
+    - sbt -ivy "$SBT_CACHE" test 
     # print the disk usage of the .ivy folder
-    - du -sh $SBT_CACHE 
+    - du -sh "$SBT_CACHE"
   cache:
     paths:
-      - $SBT_CACHE
+      - "$SBT_CACHE"
 
 build-staging:
   environment: api-staging
@@ -34,7 +34,7 @@ build-staging:
     # start a new build for staging environment on every push to master
     - oc start-build api --follow 
     # update the configuration in openshift
-    - sed -i 's;PLAY_SECRET_PLACEHOLDER;$PLAY_SECRET;g' docker/openshift/*
+    - sed -i 's;PLAY_SECRET_PLACEHOLDER;'$PLAY_SECRET';g' docker/openshift/*
     - oc replace -f docker/openshift -R
     # trigger a deployment
     - oc deploy api-staging --latest --follow
@@ -53,7 +53,7 @@ build-preprod:
     # tag the latest image as stable
     - oc tag api:latest api:stable
     # update the configuration in OpenShift
-    - sed -i 's;PLAY_SECRET_PLACEHOLDER;$PLAY_SECRET;g' docker/openshift/*
+    - sed -i 's;PLAY_SECRET_PLACEHOLDER;'$PLAY_SECRET';g' docker/openshift/*
     - sed -i 's;api-staging;api-preprod;g' docker/openshift/*
     - sed -i 's;api:latest;api:stable;g' docker/openshift/*
     - sed -i 's;'$CLUSTER_IP_STAGING';'$CLUSTER_IP_PREPROD';g' docker/openshift/*
@@ -73,7 +73,7 @@ build-prod:
     # tag the stable image as live
     - oc tag api:stable api:live
     # update the configuration in OpenShift
-    - sed -i 's;PLAY_SECRET_PLACEHOLDER;$PLAY_SECRET;g' docker/openshift/*
+    - sed -i 's;PLAY_SECRET_PLACEHOLDER;'$PLAY_SECRET';g' docker/openshift/*
     - sed -i 's;api-staging;api-prod;g' docker/openshift/*
     - sed -i 's;api:latest;api:live;g' docker/openshift/*
     - sed -i 's;'$CLUSTER_IP_STAGING';'$CLUSTER_IP_PROD';g' docker/openshift/*
