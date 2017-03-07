@@ -4,22 +4,30 @@ stages:
   - deploy-preprod
   - deploy-prod
 
+variables:
+  CLUSTER_IP_STAGING: 172.30.216.216
+  CLUSTER_IP_PREPROD: 172.30.232.198
+  CLUSTER_IP_PROD: 172.30.249.91
+  OC_VERSION: 1.3.3
+  SBT_CACHE: ".ivy"
+  SBT_VERSION: 0.13.13
+
 test:
-  image: appuio/gitlab-runner-sbt:0.13.13
+  image: appuio/gitlab-runner-sbt:$SBT_VERSION
   stage: test
   script:
     # test the application with SBT
-    - sbt -ivy .ivy test 
+    - sbt -ivy $SBT_CACHE test 
     # print the disk usage of the .ivy folder
-    - du -sh .ivy 
+    - du -sh $SBT_CACHE 
   cache:
     paths:
-      - .ivy
+      - $SBT_CACHE
 
 build-staging:
   environment: api-staging
   stage: deploy-staging
-  image: appuio/gitlab-runner-oc:1.3.3
+  image: appuio/gitlab-runner-oc:$OC_VERSION
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
@@ -38,7 +46,7 @@ build-staging:
 build-preprod:
   environment: api-preprod
   stage: deploy-preprod
-  image: appuio/gitlab-runner-oc:1.3.3
+  image: appuio/gitlab-runner-oc:$OC_VERSION
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
@@ -48,7 +56,7 @@ build-preprod:
     - sed -i 's;PLAY_SECRET_PLACEHOLDER;$PLAY_SECRET;g' docker/openshift/*
     - sed -i 's;api-staging;api-preprod;g' docker/openshift/*
     - sed -i 's;api:latest;api:stable;g' docker/openshift/*
-    - sed -i 's;172.30.216.216;172.30.232.198;g' docker/openshift/*
+    - sed -i 's;'$CLUSTER_IP_STAGING';'$CLUSTER_IP_PREPROD';g' docker/openshift/*
     - oc replace -f docker/openshift -R
     # trigger a deployment
     - oc deploy api-preprod --latest --follow
@@ -58,7 +66,7 @@ build-preprod:
 build-prod:
   environment: api-prod
   stage: deploy-prod
-  image: appuio/gitlab-runner-oc:1.3.3
+  image: appuio/gitlab-runner-oc:$OC_VERSION
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
@@ -68,7 +76,7 @@ build-prod:
     - sed -i 's;PLAY_SECRET_PLACEHOLDER;$PLAY_SECRET;g' docker/openshift/*
     - sed -i 's;api-staging;api-prod;g' docker/openshift/*
     - sed -i 's;api:latest;api:live;g' docker/openshift/*
-    - sed -i 's;172.30.216.216;172.30.249.91;g' docker/openshift/*
+    - sed -i 's;'$CLUSTER_IP_STAGING';'$CLUSTER_IP_PROD';g' docker/openshift/*
     - oc replace -f docker/openshift -R
     # trigger a deployment
     - oc deploy api-prod --latest --follow
