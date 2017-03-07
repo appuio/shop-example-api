@@ -5,7 +5,7 @@ stages:
   - deploy-prod
 
 test:
-  image: registry.vshn.net/roland.schlaefli/docs_runner_sbt:0.13.13
+  image: appuio/gitlab-runner-sbt:0.13.13
   stage: test
   script:
     # test the application with SBT
@@ -19,7 +19,7 @@ test:
 build-staging:
   environment: api-staging
   stage: deploy-staging
-  image: registry.vshn.net/roland.schlaefli/docs_runner_oc:1.3.3
+  image: appuio/gitlab-runner-oc:1.3.3
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
@@ -38,7 +38,7 @@ build-staging:
 build-preprod:
   environment: api-preprod
   stage: deploy-preprod
-  image: registry.vshn.net/roland.schlaefli/docs_runner_oc:1.3.3
+  image: appuio/gitlab-runner-oc:1.3.3
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
@@ -58,7 +58,7 @@ build-preprod:
 build-prod:
   environment: api-prod
   stage: deploy-prod
-  image: registry.vshn.net/roland.schlaefli/docs_runner_oc:1.3.3
+  image: appuio/gitlab-runner-oc:1.3.3
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
