@@ -21,6 +21,7 @@ test:
     # print the disk usage of the .ivy folder
     - du -sh "$SBT_CACHE"
   cache:
+    key: "$CI_PROJECT_ID"
     paths:
       - "$SBT_CACHE"
 
