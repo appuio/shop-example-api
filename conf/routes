@@ -3,5 +3,5 @@
 # ~~~~
 
 # products
-GET        /products            v1.controllers.ProductsController.index
-GET        /products/:id        v1.controllers.ProductsController.read(id: Int)
+GET        /api/v1/products            v1.controllers.ProductsController.index
+GET        /api/v1/products/:id        v1.controllers.ProductsController.read(id: Int)
