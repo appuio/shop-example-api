@@ -7,7 +7,7 @@
           <value>
             <ProjectSettingsEntry>
               <option name="sourceDir" value="C:\Users\rolan\Documents\Git\VSHN\docs_example_api\app" />
-              <option name="confDir" value="C:\Users\rolan\Documents\Git\VSHN\docs_example_api\app" />
+              <option name="confDir" value="C:\Users\rolan\Documents\Git\VSHN\services\api\app" />
               <option name="playDistrPath" value="$USER_HOME$/.ivy2/cache/com.typesafe.play/play_2.11/jars/play_2.11-2.5.12.jar" />
               <option name="templateImports">
                 <list>
@@ -25,14 +25,14 @@
                   <option value="controllers.Assets.Asset" />
                 </list>
               </option>
-              <option name="uri" value="/C:/Users/rolan/Documents/Git/VSHN/docs_example_api" />
+              <option name="uri" value="/C:/Users/rolan/Documents/Git/VSHN/services/api" />
             </ProjectSettingsEntry>
           </value>
         </entry>
         <entry key="play_scala_learning">
           <value>
             <ProjectSettingsEntry>
-              <option name="sourceDir" value="C:\Users\rolan\Documents\Git\VSHN\docs_example_api\app" />
+              <option name="confDir" value="C:\Users\rolan\Documents\Git\VSHN\docs_example_api\app" />
               <option name="templateImports">
                 <list>
                   <option value="models._" />
