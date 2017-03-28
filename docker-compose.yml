@@ -2,6 +2,12 @@ version: "2.1"
 services:
   api:
     image: shop-example-api
+    environment:
+      DB_DATABASE: play
+      DB_HOSTNAME: api-db
+      DB_PASSWORD: play
+      DB_USERNAME: play
+      USERS_ENDPOINT: http://localhost:4000/api/v1
 
   api-db:
     image: postgres:9.5-alpine
