@@ -7,7 +7,6 @@ GET         /api/v1/products            v1.controllers.ProductsController.index
 GET         /api/v1/products/:id        v1.controllers.ProductsController.read(id: Int)
 
 # users
-GET         /api/v1/users               v1.controllers.UsersController.index
 POST        /api/v1/users               v1.controllers.UsersController.register
 POST        /api/v1/users/login         v1.controllers.UsersController.login
 GET         /api/v1/users/logout        v1.controllers.UsersController.logout
