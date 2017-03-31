@@ -6,25 +6,39 @@ stages:
 
 variables:
   CLUSTER_IP_STAGING: 172.30.216.216
-  CLUSTER_IP_PREPROD: 172.30.232.198
-  CLUSTER_IP_PROD: 172.30.249.91
   OC_VERSION: 1.3.3
   SBT_CACHE: ".ivy"
   SBT_VERSION: 0.13.13
+
+.oc: &oc
+  image: appuio/gitlab-runner-oc:$OC_VERSION
+  script: &oc_script
+    # login to the service account to get access to the CLI
+    - oc login $KUBE_URL --token=$KUBE_TOKEN
+    # promote the image
+    - oc tag api:$BASE_TAG api:$DEPLOY_TAG
+    # update the configuration in OpenShift
+    - sed -i 's|PLAY_SECRET_PLACEHOLDER|'"$PLAY_SECRET"'|g' docker/openshift/*
+    - sed -i 's;api-staging;api-'$DEPLOY_ENV';g' docker/openshift/*
+    - sed -i 's;api:latest;api:'$DEPLOY_TAG';g' docker/openshift/*
+    - sed -i 's;'$CLUSTER_IP_STAGING';'$CLUSTER_IP';g' docker/openshift/*
+    - oc replace -f docker/openshift -R
+    # trigger a deployment
+    - oc deploy api-$DEPLOY_ENV --latest --follow
 
 test:
   image: appuio/gitlab-runner-sbt:$SBT_VERSION
   stage: build
   script:
     # test the application with SBT
-    - sbt -ivy "$SBT_CACHE" test 
+    - sbt -ivy "$SBT_CACHE" test
     # print the disk usage of the .ivy folder
     - du -sh "$SBT_CACHE"
   cache:
     key: "$CI_PROJECT_ID"
     paths:
       - "$SBT_CACHE"
-      
+
 mirror:
   stage: build
   image: samueldebruyn/debian-git:latest
@@ -38,14 +52,14 @@ mirror:
   allow_failure: true
 
 build-staging:
+  <<: *oc
   environment: api-staging
   stage: deploy-staging
-  image: appuio/gitlab-runner-oc:$OC_VERSION
   script:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
     # start a new build for staging environment on every push to master
-    - oc start-build api --follow 
+    - oc start-build api --follow
     # update the configuration in openshift
     - sed -i 's|PLAY_SECRET_PLACEHOLDER|'"$PLAY_SECRET"'|g' docker/openshift/*
     - oc replace -f docker/openshift -R
@@ -57,42 +71,26 @@ build-staging:
     - tags
 
 build-preprod:
+  <<: *oc
   environment: api-preprod
   stage: deploy-preprod
-  image: appuio/gitlab-runner-oc:$OC_VERSION
-  script:
-    # login to the service account to get access to the CLI
-    - oc login $KUBE_URL --token=$KUBE_TOKEN
-    # tag the latest image as stable
-    - oc tag api:latest api:stable
-    # update the configuration in OpenShift
-    - sed -i 's|PLAY_SECRET_PLACEHOLDER|'"$PLAY_SECRET"'|g' docker/openshift/*
-    - sed -i 's;api-staging;api-preprod;g' docker/openshift/*
-    - sed -i 's;api:latest;api:stable;g' docker/openshift/*
-    - sed -i 's;'$CLUSTER_IP_STAGING';'$CLUSTER_IP_PREPROD';g' docker/openshift/*
-    - oc replace -f docker/openshift -R
-    # trigger a deployment
-    - oc deploy api-preprod --latest --follow
   only:
     - tags
+  variables:
+    BASE_TAG: latest
+    CLUSTER_IP: 172.30.232.198
+    DEPLOY_ENV: preprod
+    DEPLOY_TAG: stable
 
 build-prod:
+  <<: *oc
   environment: api-prod
   stage: deploy-prod
-  image: appuio/gitlab-runner-oc:$OC_VERSION
-  script:
-    # login to the service account to get access to the CLI
-    - oc login $KUBE_URL --token=$KUBE_TOKEN
-    # tag the stable image as live
-    - oc tag api:stable api:live
-    # update the configuration in OpenShift
-    - sed -i 's|PLAY_SECRET_PLACEHOLDER|'"$PLAY_SECRET"'|g' docker/openshift/*
-    - sed -i 's;api-staging;api-prod;g' docker/openshift/*
-    - sed -i 's;api:latest;api:live;g' docker/openshift/*
-    - sed -i 's;'$CLUSTER_IP_STAGING';'$CLUSTER_IP_PROD';g' docker/openshift/*
-    - oc replace -f docker/openshift -R
-    # trigger a deployment
-    - oc deploy api-prod --latest --follow
   only:
     - tags
   when: manual
+  variables:
+    BASE_TAG: stable
+    CLUSTER_IP: 172.30.249.91
+    DEPLOY_ENV: prod
+    DEPLOY_TAG: live
