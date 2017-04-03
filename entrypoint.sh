@@ -22,4 +22,4 @@ done
 # as soon as postgres is up, execute the application with given params
 # include the correct db connection string
 >&2 echo "Postgres is up - executing command"
-exec env DB_URL="jdbc:postgresql://$DB_HOSTNAME:$DB_PORT/$DB_DATABASE" "$@"
+exec env DB_URL="jdbc:postgresql://$DB_HOSTNAME:$DB_PORT/$DB_DATABASE" /bin/bash -c "$@"
