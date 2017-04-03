@@ -25,4 +25,4 @@ done
 # as soon as postgres is up, execute the application with given params
 # include the correct db connection string
 >&2 echo "Postgres is up - executing command"
-exec /bin/bash -c "DB_URL=$DB_URL;$@"
+exec "DB_URL=$DB_URL $@"
