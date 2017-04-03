@@ -13,6 +13,9 @@ echo "$DB_HOSTNAME:$DB_PORT:$DB_DATABASE:$DB_USERNAME:$DB_PASSWORD" > ~/.pgpass
 chmod 600 ~/.pgpass
 export PGPASSFILE=~/.pgpass
 
+# concatenate the correct db connection string
+DB_URL="jdbc:postgresql://$DB_HOSTNAME:$DB_PORT/$DB_DATABASE"
+
 # sleep as long as postgres is not ready yet
 until psql -h "$DB_HOSTNAME" -U "$DB_USERNAME"; do
   >&2 echo "Postgres is unavailable - sleeping"
@@ -22,4 +25,4 @@ done
 # as soon as postgres is up, execute the application with given params
 # include the correct db connection string
 >&2 echo "Postgres is up - executing command"
-exec env DB_URL="jdbc:postgresql://$DB_HOSTNAME:$DB_PORT/$DB_DATABASE" /bin/bash -c "$@"
+exec /bin/bash -c "DB_URL=$DB_URL;$@"
