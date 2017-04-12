@@ -59,7 +59,7 @@ build-staging:
     # login to the service account to get access to the CLI
     - oc login $KUBE_URL --token=$KUBE_TOKEN
     # start a new build for staging environment on every push to master
-    - oc start-build api --follow
+    - oc start-build api-staging --follow
     # update the configuration in openshift
     - sed -i 's|PLAY_SECRET_PLACEHOLDER|'"$PLAY_SECRET"'|g' docker/openshift/*
     - oc replace -f docker/openshift -R
