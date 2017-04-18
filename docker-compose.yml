@@ -3,7 +3,7 @@ services:
   api:
     image: shop-example-api
     environment:
-      PLAY_SECRET: abcdefgh
+      PLAY_SECRET: "l1jp*8SggVjlWpGI5QkFG3UUB&ob@lY@s4v^h83&Rv7YjI4yD8FqENTr^6ju40Cz"
       DB_DATABASE: play
       DB_HOSTNAME: api-db
       DB_PASSWORD: play
@@ -18,5 +18,3 @@ services:
     environment:
       POSTGRES_USER: play
       POSTGRES_PASSword: play
-    ports:
-      - "5432:5432"
