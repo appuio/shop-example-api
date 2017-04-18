@@ -89,23 +89,10 @@ class UsersController @Inject()(configurationProvider: ConfigurationProvider, ws
             )
 
         // execute the request and process the response
-        logoutRequest.get().map { response =>
-
-          // return a result based on success of the request
-          (response.json \ "success").asOpt[Boolean] match {
-            case Some(true) => Ok(Json.obj(
-              "success" -> true
-            ))
-            case _ => Ok(Json.obj(
-              "success" -> false
-            ))
-          }
-
-        }
+        logoutRequest.get().map { response => parseResponse(response) }
 
       // if there was no auth header, the user is already logged out
-      case None =>
-        Future.successful(Ok(Json.obj("success" -> true)))
+      case None => Future.successful(Ok(Json.obj("success" -> true)))
 
     }
 
@@ -115,25 +102,7 @@ class UsersController @Inject()(configurationProvider: ConfigurationProvider, ws
     * Parse a response from the users ms
     * TODO: this should also allow setting response headers (i.e. login)
     */
-  def parseResponse(response: WSResponse) = {
-
-    // return a result based on success of the request
-    (response.json \ "success").asOpt[Boolean] match {
-
-      case Some(true) => Ok(Json.obj(
-        "success" -> true,
-        "data" -> (response.json \ "data").as[JsObject]
-      ))
-
-      case Some(false) => Ok(Json.obj(
-        "success" -> false,
-        "error" -> (response.json \ "error").as[JsObject]
-      ))
-
-      case None => Ok(Json.obj(
-        "success" -> false
-      ))
-
-    }
+  def parseResponse(response: WSResponse):Result = {
+    Status(response.status)(response.json)
   }
 }

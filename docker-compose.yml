@@ -8,13 +8,15 @@ services:
       DB_HOSTNAME: api-db
       DB_PASSWORD: play
       DB_USERNAME: play
+      ORDERS_ENDPOINT: http://orders:8080/api/v1
       USERS_ENDPOINT: http://users:4000/api/v1
     ports:
       - "9000:9000"
-    # command: "/opt/app-root/src/entrypoint.sh /bin/bash -c '/opt/app-root/src/target/universal/stage/bin/docs_example_api -Dpidfile.path=/tmp/app.pid'"
 
   api-db:
     image: postgres:9.5-alpine
     environment:
       POSTGRES_USER: play
       POSTGRES_PASSword: play
+    ports:
+      - "5432:5432"

@@ -1,3 +1,2 @@
 #!/bin/bash
-docker build ../../s2i/play -t scala-play-s2i
-s2i build --incremental=true --loglevel 5 -s image:///usr/libexec/s2i . scala-play-s2i shop-example-api
+s2i build --incremental=true --loglevel 5 -s image:///usr/libexec/s2i . appuio/shop-example-api-builder shop-example-api
