@@ -23,7 +23,7 @@ variables:
     - sed -i 's;'$CLUSTER_IP_STAGING';'$CLUSTER_IP';g' docker/openshift/*
     - oc replace -f docker/openshift -R
     # trigger a deployment
-    - oc deploy api-$DEPLOY_ENV --latest --follow
+    - oc rollout latest dc/api-$DEPLOY_ENV
 
 test:
   image: appuio/gitlab-runner-sbt:$SBT_VERSION
@@ -62,7 +62,7 @@ build-staging:
     # update the configuration in openshift
     - oc replace -f docker/openshift -R
     # trigger a deployment
-    - oc deploy api-staging --latest --follow
+    - oc rollout latest dc/api-staging
   only:
     - master
   except:
